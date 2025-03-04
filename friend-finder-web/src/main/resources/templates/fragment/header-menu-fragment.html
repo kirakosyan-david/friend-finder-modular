@@ -1,0 +1,85 @@
+<head lang="en" xmlns:th="http://www.thymeleaf.org">
+    <meta http-equiv="content-type" content="text/html; charset=utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="This is social network html5 template available in themeforest......">
+    <meta name="keywords" content="Social Network, Social Media, Make Friends, Newsfeed, Profile Page">
+    <meta name="robots" content="index, follow">
+
+    <link rel="stylesheet" href="/css/bootstrap.min.css">
+    <link rel="stylesheet" href="/css/style.css">
+    <link rel="stylesheet" href="/css/ionicons.min.css">
+    <link rel="stylesheet" href="/css/font-awesome.min.css">
+    <link href="/css/emoji.css" rel="stylesheet">
+
+</head>
+
+<nav class="navbar navbar-default navbar-fixed-top menu">
+    <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1" th:fragment="header-menu">
+        <ul class="nav navbar-nav navbar-right main-menu">
+            <li class="dropdown" th:if="${user.getRole().name().equals('ADMIN')}">
+                <a href="/admin/users">ADMIN</a>
+            </li>
+
+            <li class="dropdown">
+                <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true"
+                   aria-expanded="false">Newsfeed <span><img src="/images/down-arrow.png" alt=""></span></a>
+                <ul class="dropdown-menu newsfeed-home">
+                    <li><a href="/posts">Newsfeed</a></li>
+                    <li><a href="/friends">My friends</a></li>
+                    <li><a href="/newsfeed/messages">Chatroom</a></li>
+                    <li><a href="/posts/images">Images</a></li>
+                    <li><a href="/posts/video">Videos</a></li>
+                </ul>
+            </li>
+            <li class="dropdown">
+                <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true"
+                   aria-expanded="false">Timeline <span><img src="/images/down-arrow.png" alt=""></span></a>
+                <ul class="dropdown-menu login">
+                    <li><a th:href="@{'/users/about/profile/' + ${user.id}}">Timeline About</a></li>
+                    <li><a th:href="@{'/users/profile/' + ${user.id}}">Timeline</a></li>
+                    <li><a th:href="@{'/users/image/profile/' + ${user.id}}">Timeline Album</a></li>
+                    <li><a th:href="@{'/users/friend/profile/' + ${user.id}}">Timeline Friends</a></li>
+                    <li><a href="/timeline/edit-basic">Edit: Basic Info</a></li>
+                    <li><a href="/profile/work-education">Edit: Work & Education</a></li>
+                    <li><a href="/interests">Edit: Interests</a></li>
+                    <li><a href="/language">Edit: Languages</a></li>
+                    <li><a href="/users/about/profile/change-password">Change Password</a></li>
+                </ul>
+            </li>
+            <li class="dropdown">
+                <a href="#" class="dropdown-toggle pages" data-toggle="dropdown" role="button" aria-haspopup="true"
+                   aria-expanded="false">All Pages <span><img src="/images/down-arrow.png" alt=""></span></a>
+                <ul class="dropdown-menu page-list">
+                    <li><a href="/posts">Newsfeed</a></li>
+                    <li><a href="/friends">My friends</a></li>
+                    <li><a href="/newsfeed/messages">Chatroom</a></li>
+                    <li><a href="/posts/images">Images</a></li>
+                    <li><a href="posts/video">Videos</a></li>
+                    <li><a th:href="@{'/users/profile/' + ${user.id}}" >Timeline</a></li>
+                    <li><a th:href="@{'/users/about/profile/' + ${user.id}}">Timeline About</a></li>
+                    <li><a th:href="@{'/users/image/profile/' + ${user.id}}">Timeline Album</a></li>
+                    <li><a th:href="@{'/users/friend/profile/' + ${user.id}}">Timeline Friends</a></li>
+                    <li><a href="/timeline/edit-basic">Edit Profile</a></li>
+                    <li><a href="/contact">Contact Us</a></li>
+                </ul>
+            </li>
+            <li class="dropdown"><a href="/contact">Contact</a></li>
+            <li class="dropdown"><a href="/about-us">About us</a></li>
+            <li class="dropdown">
+                <a href="/logout" class="dropdown-toggle" ><img src="/icon/exit.png" alt="" style="height: 30px; width: 30px"></a>
+            </li>
+        </ul>
+        <form class="navbar-form navbar-right hidden-sm" action="/search/friend/1" method="post">
+            <div class="form-group">
+                <i class="icon ion-android-search"></i>
+                <input type="text" class="form-control" name="keyword" placeholder="Search friends">
+            </div>
+        </form>
+    </div>
+</nav>
+
+<script src="/js/jquery-3.1.1.min.js"></script>
+<script src="/js/bootstrap.min.js"></script>
+<script src="/js/jquery.sticky-kit.min.js"></script>
+<script src="/js/jquery.scrollbar.min.js"></script>
+<script src="/js/script.js"></script>

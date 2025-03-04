@@ -1,0 +1,19 @@
+spring:
+  datasource:
+    url: jdbc:h2:mem:test
+  jpa:
+    properties:
+      hibernate.dialect: org.hibernate.dialect.H2Dialect
+  liquibase:
+    change-log: classpath:/liquibase/changelog.xml
+
+jwt:
+  secret: YmJieXZmaHRkZHZoO2lvdWJ2NHNhemF6d2prJ2xbcGk4eWRlc3J0Zmhsb2tsW3BwbHBvb2ZnaGdkaHNnd3NlZnc=
+  expiration: 600000
+
+springdoc:
+  packages-to-scan: com.friendfinder.friendfinderrest.endpoint
+
+upload:
+  media:
+    path: /Users/Spring Teamwork Website/friend-finder-modular/images/

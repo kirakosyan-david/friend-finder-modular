@@ -1,0 +1,290 @@
+﻿<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta http-equiv="content-type" content="text/html; charset=utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="This is social network html5 template available in themeforest......">
+    <meta name="keywords" content="Social Network, Social Media, Make Friends, Newsfeed, Profile Page">
+    <meta name="robots" content="index, follow">
+    <title>Chatroom | Send and Receive Messages</title>
+
+    <!-- Stylesheets
+    ================================================= -->
+    <link rel="stylesheet" href="/css/bootstrap.min.css">
+    <link rel="stylesheet" href="/css/jquery.scrollbar.css">
+    <link rel="stylesheet" href="/css/style.css">
+    <link rel="stylesheet" href="/css/ionicons.min.css">
+    <link rel="stylesheet" href="/css/font-awesome.min.css">
+    <link href="/css/emoji.css" rel="stylesheet">
+
+    <!--Favicon-->
+    <link rel="shortcut icon" type="image/png" href="/images/fav.png">
+</head>
+<body>
+
+<!-- Header
+================================================= -->
+<header id="header">
+    <nav class="navbar navbar-default navbar-fixed-top menu">
+        <div class="container">
+
+            <!-- Brand and toggle get grouped for better mobile display -->
+            <div class="navbar-header">
+                <button type="button" class="navbar-toggle collapsed" data-toggle="collapse"
+                        data-target="#bs-example-navbar-collapse-1" aria-expanded="false">
+                    <span class="sr-only">Toggle navigation</span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+                <a class="navbar-brand" href="/posts"><img src="/images/logo.png" alt="logo"></a>
+            </div>
+
+            <!-- Collect the nav links, forms, and other content for toggling -->
+            <div th:include="fragment/header-menu-fragment::header-menu"></div>
+
+        </div><!-- /.container -->
+    </nav>
+</header>
+<!--Header End-->
+
+<div id="page-contents">
+    <div class="container">
+        <div class="row">
+
+            <!-- Newsfeed Common Side Bar Left
+      ================================================= -->
+            <div class="col-md-3 static">
+                <div class="profile-card"
+                     th:if="${user.profilePicture == null || user.profilePicture.equalsIgnoreCase('null')}">
+                    <img src="/images/post-images/difault.png" alt="user" class="profile-photo">
+                    <h5><a th:href="@{'/users/profile/' + ${user.id}}" class="text-white"><i th:text="${user.name}"></i>
+                        <i th:text="${user.surname}"></i></a></h5>
+                </div>
+                <div class="profile-card" th:if="${user.profilePicture != null}">
+                    <img th:src="@{/getProfilePic(imageName=${user.profilePicture})}" alt="user"
+                         class="profile-photo">
+                    <h5><a th:href="@{'/users/profile/' + ${user.id}}" class="text-white"><i th:text="${user.name}"></i>
+                        <i th:text="${user.surname}"></i></a></h5>
+                </div>
+
+
+                <!--profile card ends-->
+                <ul class="nav-news-feed" th:include="fragment/newsfeed-pages-fragment::newsfeed-pages"></ul>
+
+                <!--news-feed links ends-->
+                <div id="chat-block">
+                    <div class="title"><a th:href="@{/newsfeed/messages}" style="color: white">Chat online</a></div>
+                    <ul class="online-users list-inline">
+                        <li th:each="oneUser, iterStat : ${allExceptCurrentUser}" th:if="${iterStat.index <= 8}">
+                            <a th:href="@{/newsfeed/chat/create/{id}(id=${oneUser.getId()})}"
+                               th:title="${oneUser.getName() + ' ' + oneUser.getSurname()}">
+                                <img th:if="${oneUser.getProfilePicture() != null}"
+                                     th:src="@{/getProfilePic(imageName=${oneUser.getProfilePicture()})}" alt="user"
+                                     class="img-responsive profile-photo">
+                                <img th:if="${oneUser.getProfilePicture() == null || oneUser.getProfilePicture().equalsIgnoreCase('null')}"
+                                     src="/images/users/difault.png" alt="user" class="img-responsive profile-photo">
+
+                                <span class="online-dot"></span></a></li>
+                    </ul>
+                </div><!--chat block ends-->
+            </div>
+
+            <div class="col-md-7">
+
+                <!-- Chat Room
+                ================================================= -->
+                <div class="chat-room">
+                    <div class="row">
+                        <div class="col-md-5">
+
+                            <!-- Contact List in Left-->
+                            <ul class="nav nav-tabs contact-list scrollbar-wrapper scrollbar-outer">
+                                <li class="active" th:each="chat, iterStat : ${chats}">
+                                    <a th:href="${'#contact-' + chat.getAnotherUser().getId()}" data-toggle="tab">
+                                        <div class="contact">
+                                            <img th:if="${chat.getAnotherUser().getId() != user.getId() && chat.getAnotherUser().getProfilePicture() != null}"
+                                                 th:src="@{/getProfilePic(imageName=${chat.getAnotherUser().getProfilePicture()})}"
+                                                 alt="" class="profile-photo-sm pull-left">
+                                            <img th:if="${chat.getAnotherUser().getId() != user.getId() && (chat.getAnotherUser().getProfilePicture() == null
+                                            || chat.getAnotherUser().getProfilePicture().equalsIgnoreCase('null'))}"
+                                                 src="/images/users/difault.png" alt=""
+                                                 class="profile-photo-sm pull-left">
+
+                                            <img th:if="${chat.getAnotherUser().getId() == user.getId() && chat.getCurrentUser().getProfilePicture() != null}"
+                                                 th:src="@{/getProfilePic(imageName=${chat.getCurrentUser().getProfilePicture()})}"
+                                                 alt="" class="profile-photo-sm pull-left">
+                                            <img th:if="${chat.getAnotherUser().getId() == user.getId() && (chat.getCurrentUser().getProfilePicture() == null
+                                            || chat.getCurrentUser().getProfilePicture().equalsIgnoreCase('null'))}"
+                                                 src="/images/users/difault.png" alt=""
+                                                 class="profile-photo-sm pull-left">
+
+                                            <div class="msg-preview">
+                                                <h6 th:if="${chat.getAnotherUser().getId() != user.getId()}"
+                                                    th:text="${chat.getAnotherUser().getName() + ' ' + chat.getAnotherUser().getSurname()}"></h6>
+                                                <h6 th:if="${chat.getAnotherUser().getId() == user.getId()}"
+                                                    th:text="${chat.getCurrentUser().getName() + ' ' + chat.getCurrentUser().getSurname()}"></h6>
+                                                <p class="text-muted"></p>  <!-- TODO: new message -->
+                                                <small class="text-muted">click there</small>
+                                                <!-- TODO: new message time -->
+
+                                            </div>
+                                        </div>
+                                    </a>
+                                </li>
+                            </ul><!--Contact List in Left End-->
+
+                        </div>
+                        <div class="col-md-7">
+
+                            <!--Chat Messages in Right-->
+                            <div class="tab-content scrollbar-wrapper wrapper scrollbar-outer">
+                                <div class="tab-pane" th:each="chat, iterStat : ${chats}"
+                                     th:id="${'contact-' + chat.getAnotherUser().getId()}">
+                                    <input type="hidden" id="anotherUserId" th:value="${chat.getAnotherUser().getId()}">
+                                    <div class="chat-body">
+                                        <ul class="chat-message">
+                                            <li th:each="message : ${chat.getMessages()}"
+                                                th:class="${message.isSentByCurrentUser(user) ? 'right' : 'left'}">
+
+                                                <img th:if="${message.getSender().getProfilePicture() != null}"
+                                                     th:src="@{/getProfilePic(imageName=${message.getSender().getProfilePicture()})}"
+                                                     alt=""
+                                                     th:class="'profile-photo-sm pull-' + ${message.isSentByCurrentUser(user) ? 'right' : 'left'}">
+
+                                                <img th:if="${(message.getSender().getProfilePicture() == null
+                                            || message.getSender().getProfilePicture().equalsIgnoreCase('null'))}"
+                                                     src="/images/users/difault.png" alt=""
+                                                     th:class="'profile-photo-sm pull-' + ${message.isSentByCurrentUser(user) ? 'right' : 'left'}">
+
+
+                                                <div class="chat-item">
+                                                    <div class="chat-item-header">
+                                                        <h5 th:text="${message.sender.name + ' ' + message.sender.surname}"></h5>
+                                                        <small class="text-muted"
+                                                               th:text="${message.getSentAt()}"></small>
+                                                    </div>
+                                                    <p th:text="${message.getContent()}"></p>
+                                                </div>
+                                            </li>
+                                        </ul>
+                                    </div>
+                                    <form action="/newsfeed/send-message" method="post">
+                                        <div class="send-message">
+                                            <div class="input-group">
+                                                <input type="text" class="form-control" name="content"
+                                                       placeholder="Type your message">
+                                                <input type="hidden" name="chatId" th:value="${chat.getId()}">
+                                                <input type="hidden" name="receiverId"
+                                                       th:value="${chat.getAnotherUser().getId()}">
+                                                <span class="input-group-btn">
+                                                <button class="btn btn-default" type="submit">Send</button>
+                                      </span>
+                                            </div>
+                                        </div>
+                                    </form>
+                                </div>
+                            </div>
+                            <!--Chat Messages in Right End-->
+
+
+                        </div>
+                        <div class="clearfix"></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Newsfeed Common Side Bar Right
+      ================================================= -->
+            <div class="col-md-2 static">
+                <div class="suggestions" id="sticky-sidebar">
+                    <h4 class="grey">Who to Follow</h4>
+                    <div class="follow-user" th:each="us : ${users}">
+                        <img th:if="${us.getProfilePicture() == null || us.getProfilePicture().equalsIgnoreCase('null')}"
+                             src="/images/post-images/difault.png" alt="" class="profile-photo-sm pull-left">
+                        <img th:if="${us.getProfilePicture() != null}"
+                             th:src="@{/getProfilePic(imageName=${us.getProfilePicture()})}" alt="" class="profile-photo-sm pull-left">
+                        <div>
+                            <h5><a th:href="@{'/users/profile/' + ${us.id}}" th:text="${us.name}+' '+${us.surname}"></a></h5>
+                            <a th:href="@{'/send-request?sender=' + ${user.id} + '&receiver=' +${us.id}}"
+                               class="text-green">Add friend</a>
+                        </div>
+                    </div>
+                    <h4 class="grey" th:if="${requestSenders.size()>0}">Friend Requests</h4>
+                    <div class="follow-user" th:each="sender : ${requestSenders}">
+                        <img th:if="${sender.getProfilePicture() == null || sender.getProfilePicture().equalsIgnoreCase('null')}"
+                             src="/images/post-images/difault.png" alt="" class="profile-photo-sm pull-left">
+                        <img th:if="${sender.getProfilePicture() != null}"
+                             th:src="@{/getProfilePic(imageName=${sender.getProfilePicture()})}" alt="" class="profile-photo-sm pull-left">
+                        <div>
+                            <h5><a th:href="@{'/users/profile/' + ${sender.id}}" th:text="${sender.name}+' '+${sender.surname}"></a></h5>
+                            <a th:href="@{'/access-request?sender=' + ${sender.id} + '&receiver=' +${user.id}}"
+                               class="text-green">Accept</a>
+                            <a th:href="@{'/reject-request?sender=' + ${sender.id} + '&receiver=' +${user.id}}"
+                               class="text-green"> Reject</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- Footer
+================================================= -->
+<footer th:include="fragment/footer-menu-fragment::footer-menu"></footer>
+
+<!--preloader-->
+<div id="spinner-wrapper">
+    <div class="spinner"></div>
+</div>
+
+
+<!-- Scripts
+================================================= -->
+<script src="/js/jquery-3.1.1.min.js"></script>
+<script src="/js/bootstrap.min.js"></script>
+<script src="/js/jquery.sticky-kit.min.js"></script>
+<script src="/js/jquery.scrollbar.min.js"></script>
+<script src="/js/script.js"></script>
+
+<script>
+    // Получаем список элементов списка контактов
+    var contactListItems = document.querySelectorAll('.nav-tabs.contact-list li');
+
+    // Получаем список элементов содержимого чата
+    var chatContentItems = document.querySelectorAll('.tab-content .tab-pane');
+
+    // Добавляем обработчик события для каждого элемента списка контактов
+    contactListItems.forEach(function (item, index) {
+        item.addEventListener('click', function () {
+            // Удаляем класс 'active' у всех элементов списка контактов
+            contactListItems.forEach(function (contact) {
+                contact.classList.remove('active');
+            });
+
+            // Добавляем класс 'active' только текущему элементу списка контактов
+            item.classList.add('active');
+
+            // Удаляем класс 'active' у всех элементов содержимого чата
+            chatContentItems.forEach(function (chat) {
+                chat.classList.remove('active');
+            });
+
+            // Добавляем класс 'active' только соответствующему элементу содержимого чата
+            chatContentItems[index].classList.add('active');
+        });
+    });
+
+    window.addEventListener('load', function () {
+        // Здесь вы можете указать индекс чата, который должен быть активным при загрузке страницы
+        var activeChatIndex = 0;
+
+        // Применяем класс 'active' к элементу списка контактов
+        contactListItems[activeChatIndex].classList.add('active');
+
+        // Применяем класс 'active' к содержимому чата
+        chatContentItems[activeChatIndex].classList.add('active');
+    });
+</script>
+</body>
+</html>

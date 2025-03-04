@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta http-equiv="content-type" content="text/html; charset=utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="This is social network html5 template available in themeforest......">
+  <meta name="keywords" content="Social Network, Social Media, Make Friends, Newsfeed, Profile Page">
+  <meta name="robots" content="index, follow">
+
+  <!-- Stylesheets
+  ================================================= -->
+  <link rel="stylesheet" href="/css/bootstrap.min.css">
+  <link rel="stylesheet" href="/css/style.css">
+  <link rel="stylesheet" href="/css/ionicons.min.css">
+  <link rel="stylesheet" href="/css/font-awesome.min.css">
+  <link href="/css/emoji.css" rel="stylesheet">
+
+  <!--Favicon-->
+  <link rel="shortcut icon" type="image/png" href="/images/fav.png">
+
+</head>
+
+<footer id="footer" th:fragment="footer-menu" >
+  <div class="container">
+    <div class="row">
+      <div class="footer-wrapper">
+        <div class="col-md-3 col-sm-3">
+          <a href=""><img src="/images/logo-black.png" alt="" class="footer-logo"></a>
+          <ul class="list-inline social-icons">
+            <li><a href="#"><i class="icon ion-social-facebook"></i></a></li>
+            <li><a href="#"><i class="icon ion-social-twitter"></i></a></li>
+            <li><a href="#"><i class="icon ion-social-googleplus"></i></a></li>
+            <li><a href="#"><i class="icon ion-social-pinterest"></i></a></li>
+            <li><a href="#"><i class="icon ion-social-linkedin"></i></a></li>
+          </ul>
+        </div>
+        <div class="col-md-2 col-sm-2">
+          <h5>Logout & Newsfeed</h5>
+          <ul class="footer-links">
+            <li><a href="/logout">Logout</a></li>
+            <li><a href="/posts">Newsfeed</a></li>
+            <li><a href="/friends">My Friends</a></li>
+            <li><a href="/newsfeed/messages">Chatroom</a></li>
+            <li><a href="/posts/images">Images</a></li>
+            <li><a href="posts/video">Videos</a></li>
+          </ul>
+        </div>
+        <div class="col-md-2 col-sm-2">
+          <h5>Timeline</h5>
+          <ul class="footer-links">
+            <li><a th:href="@{'/users/about/profile/' + ${user.id}}">Timeline About</a></li>
+            <li><a th:href="@{'/users/profile/' + ${user.id}}">Timeline</a></li>
+            <li><a th:href="@{'/users/image/profile/' + ${user.id}}">Timeline Album</a></li>
+            <li><a th:href="@{'/users/friend/profile/' + ${user.id}}">Timeline Friends</a></li>
+            <li><a href="/timeline/edit-basic">Edit: Basic Info</a></li>
+            <li><a href="/profile/work-education">Edit: Work & Education</a></li>
+            <li><a href="/interests">Edit: Interests</a></li>
+            <li><a href="/language">Edit: Languages</a></li>
+            <li><a href="/users/about/profile/changePassword">Change Password</a></li>
+          </ul>
+        </div>
+        <div class="col-md-2 col-sm-2">
+          <h5>About & Contact</h5>
+          <ul class="footer-links">
+            <li><a href="/about-us">About us</a></li>
+            <li><a href="/contact">Contact us</a></li>
+          </ul>
+        </div>
+        <div class="col-md-3 col-sm-3">
+          <h5>Contact Us</h5>
+          <ul class="contact">
+            <li><i class="icon ion-ios-telephone-outline"></i>+374 99 999 999</li>
+            <li><i class="icon ion-ios-email-outline"></i>finderfriend2023@gmail.com</li>
+            <li><i class="icon ion-ios-location-outline"></i>Independence Square, Gyumri</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="copyright">
+    <p>Thunder Team © 2016. All rights reserved</p>
+  </div>
+</footer>
+
+<script async="" defer=""
+        src=""></script>
+<script src="/js/jquery-3.1.1.min.js"></script>
+<script src="/js/bootstrap.min.js"></script>
+<script src="/js/jquery.sticky-kit.min.js"></script>
+<script src="/js/jquery.scrollbar.min.js"></script>
+<script src="/js/script.js"></script>
+<script src="/https://code.jquery.com/jquery-3.6.4.slim.min.js"
+        integrity="sha256-a2yjHM4jnF9f54xUQakjZGaqYs/V1CYvWpoqZzC2/Bw=" crossorigin="anonymous"></script>
+<script src="/./main.js"></script>
+</html>

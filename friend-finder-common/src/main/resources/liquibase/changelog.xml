@@ -1,0 +1,723 @@
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext"
+                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.4.xsd http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd">
+
+
+    <changeSet id="createDB" author="hhakobyan">
+        <sql>
+        create table if not exists user_country
+        (
+        id   int auto_increment
+        primary key,
+        name varchar(100) not null
+        )
+        collate = utf8mb4_unicode_ci;
+
+        create table if not exists user
+        (
+        id                   int auto_increment
+        primary key,
+        name                 varchar(255)            not null,
+        surname              varchar(255)            not null,
+        email                varchar(255)            not null,
+        password             varchar(255)            not null,
+        date_of_birth        date                    not null,
+        gender               enum ('MALE', 'FEMALE') not null,
+        city                 varchar(255)            not null,
+        country_id           int                     not null,
+        profile_pic          varchar(255)            null,
+        personal_information varchar(255)            null,
+        profile_bg_pic       varchar(255)            null,
+        constraint user_country__fk
+        foreign key (country_id) references user_country (id)
+        );
+
+        create table if not exists education
+        (
+        id             int auto_increment
+        primary key,
+        ed_name        varchar(255) null,
+        ed_from_date   int          null,
+        ed_to_date     int          null,
+        ed_description varchar(255) null,
+        user_id        int          not null,
+        constraint education__fk
+        foreign key (user_id) references user (id)
+        );
+
+        create table if not exists friend_request
+        (
+        sender_id   int                                      not null,
+        receiver_id int                                      not null,
+        id          int auto_increment
+        primary key,
+        status      enum ('PENDING', 'ACCEPTED', 'REJECTED') null,
+        constraint friend_request_receiver__fk
+        foreign key (receiver_id) references user (id),
+        constraint friend_request_sender__fk
+        foreign key (sender_id) references user (id)
+        );
+
+        create table if not exists interests
+        (
+        id       int auto_increment
+        primary key,
+        interest varchar(255) null,
+        user_id  int          null,
+        constraint user_interests__fk
+        foreign key (user_id) references user (id)
+        );
+
+        create table if not exists language
+        (
+        id       int auto_increment
+        primary key,
+        language varchar(255) null,
+        user_id  int          null,
+        constraint user_language__fk
+        foreign key (user_id) references user (id)
+        );
+
+        create table if not exists post
+        (
+        id              int auto_increment
+        primary key,
+        user_id         int          not null,
+        description     text         null,
+        img_name        varchar(255) null,
+        music_file_name varchar(255) null,
+        like_count      int          not null,
+        dislike_count   int          not null,
+        post_datetime   datetime     null,
+        constraint user_post__fk
+        foreign key (user_id) references user (id)
+        );
+
+        create table if not exists commentary
+        (
+        id              int auto_increment
+        primary key,
+        user_id         int  not null,
+        post_id         int  not null,
+        commentary_text text not null,
+        constraint commentary_post__fk
+        foreign key (post_id) references post (id),
+        constraint user_commentary__fk
+        foreign key (user_id) references user (id)
+        );
+
+        create table if not exists post_like
+        (
+        id          int auto_increment
+        primary key,
+        like_status enum ('LIKE', 'DISLIKE') null,
+        post_id     int                      not null,
+        user_id     int                      not null,
+        constraint postLike_postLike_fk
+        foreign key (post_id) references post (id),
+        constraint post_like_userLike_fk
+        foreign key (user_id) references user (id)
+        );
+
+        create table if not exists user_friends
+        (
+        user_id   int not null,
+        friend_id int not null,
+        primary key (user_id, friend_id),
+        constraint friends__fk
+        foreign key (friend_id) references user (id),
+        constraint user__fk
+        foreign key (user_id) references user (id)
+        );
+
+        create table if not exists work_experiences
+        (
+        id             int auto_increment
+        primary key,
+        we_name        varchar(255) null,
+        we_designation varchar(255) null,
+        we_from_date   int          null,
+        we_to_date     int          null,
+        we_city        varchar(255) null,
+        we_description varchar(255) null,
+        user_id        int          not null,
+        constraint work_experiences__fk
+        foreign key (user_id) references user (id)
+        );
+
+        create table if not exists user_image
+        (
+            id         int(11)      not null auto_increment primary key,
+            image_name varchar(255) not null,
+            user_id    int(11)      not null,
+            constraint user_user_image__fk foreign key (user_id) references user (id)
+        );
+        </sql>
+    </changeSet>
+    <changeSet id="addCountries" author="hhakobyanh">
+        <sql>
+            INSERT INTO user_country
+            VALUES (1, 'Afghanistan'),
+                   (2, 'Aland Islands'),
+                   (3, 'Albania'),
+                   (4, 'Algeria'),
+                   (5, 'American Samoa'),
+                   (6, 'Andorra'),
+                   (7, 'Angola'),
+                   (8, 'Anguilla'),
+                   (9, 'Antarctica'),
+                   (10, 'Antigua And Barbuda'),
+                   (11, 'Argentina'),
+                   (12, 'Armenia'),
+                   (13, 'Aruba'),
+                   (14, 'Australia'),
+                   (15, 'Austria'),
+                   (16, 'Azerbaijan'),
+                   (17, 'The Bahamas'),
+                   (18, 'Bahrain'),
+                   (19, 'Bangladesh'),
+                   (20, 'Barbados'),
+                   (21, 'Belarus'),
+                   (22, 'Belgium'),
+                   (23, 'Belize'),
+                   (24, 'Benin'),
+                   (25, 'Bermuda'),
+                   (26, 'Bhutan'),
+                   (27, 'Bolivia'),
+                   (28, 'Bosnia and Herzegovina'),
+                   (29, 'Botswana'),
+                   (30, 'Bouvet Island'),
+                   (31, 'Brazil'),
+                   (32, 'British Indian Ocean Territory'),
+                   (33, 'Brunei'),
+                   (34, 'Bulgaria'),
+                   (35, 'Burkina Faso'),
+                   (36, 'Burundi'),
+                   (37, 'Cambodia'),
+                   (38, 'Cameroon'),
+                   (39, 'Canada'),
+                   (40, 'Cape Verde'),
+                   (41, 'Cayman Islands'),
+                   (42, 'Central African Republic'),
+                   (43, 'Chad'),
+                   (44, 'Chile'),
+                   (45, 'China'),
+                   (46, 'Christmas Island'),
+                   (47, 'Cocos (Keeling) Islands'),
+                   (48, 'Colombia'),
+                   (49, 'Comoros'),
+                   (50, 'Congo'),
+                   (51, 'Democratic Republic of the Congo'),
+                   (52, 'Cook Islands'),
+                   (53, 'Costa Rica'),
+                   (54, 'Cote DIvoire (Ivory Coast)'),
+                   (55, 'Croatia'),
+                   (56, 'Cuba'),
+                   (57, 'Cyprus'),
+                   (58, 'Czech Republic'),
+                   (59, 'Denmark'),
+                   (60, 'Djibouti'),
+                   (61, 'Dominica'),
+                   (62, 'Dominican Republic'),
+                   (63, 'East Timor'),
+                   (64, 'Ecuador'),
+                   (65, 'Egypt'),
+                   (66, 'El Salvador'),
+                   (67, 'Equatorial Guinea'),
+                   (68, 'Eritrea'),
+                   (69, 'Estonia'),
+                   (70, 'Ethiopia'),
+                   (71, 'Falkland Islands'),
+                   (72, 'Faroe Islands'),
+                   (73, 'Fiji Islands'),
+                   (74, 'Finland'),
+                   (75, 'France'),
+                   (76, 'French Guiana'),
+                   (77, 'French Polynesia'),
+                   (78, 'French Southern Territories'),
+                   (79, 'Gabon'),
+                   (80, 'Gambia The'),
+                   (81, 'Georgia'),
+                   (82, 'Germany'),
+                   (83, 'Ghana'),
+                   (84, 'Gibraltar'),
+                   (85, 'Greece'),
+                   (86, 'Greenland'),
+                   (87, 'Grenada'),
+                   (88, 'Guadeloupe'),
+                   (89, 'Guam'),
+                   (90, 'Guatemala'),
+                   (91, 'Guernsey and Alderney'),
+                   (92, 'Guinea'),
+                   (93, 'Guinea-Bissau'),
+                   (94, 'Guyana'),
+                   (95, 'Haiti'),
+                   (96, 'Heard Island and McDonald Islands'),
+                   (97, 'Honduras'),
+                   (98, 'Hong Kong S.A.R.'),
+                   (99, 'Hungary'),
+                   (100, 'Iceland'),
+                   (101, 'India'),
+                   (102, 'Indonesia'),
+                   (103, 'Iran'),
+                   (104, 'Iraq'),
+                   (105, 'Ireland'),
+                   (106, 'Israel'),
+                   (107, 'Italy'),
+                   (108, 'Jamaica'),
+                   (109, 'Japan'),
+                   (110, 'Jersey'),
+                   (111, 'Jordan'),
+                   (112, 'Kazakhstan'),
+                   (113, 'Kenya'),
+                   (114, 'Kiribati'),
+                   (115, 'North Korea'),
+                   (116, 'South Korea'),
+                   (117, 'Kuwait'),
+                   (118, 'Kyrgyzstan'),
+                   (119, 'Laos'),
+                   (120, 'Latvia'),
+                   (121, 'Lebanon'),
+                   (122, 'Lesotho'),
+                   (123, 'Liberia'),
+                   (124, 'Libya'),
+                   (125, 'Liechtenstein'),
+                   (126, 'Lithuania'),
+                   (127, 'Luxembourg'),
+                   (128, 'Macau S.A.R.'),
+                   (129, 'North Macedonia'),
+                   (130, 'Madagascar'),
+                   (131, 'Malawi'),
+                   (132, 'Malaysia'),
+                   (133, 'Maldives'),
+                   (134, 'Mali'),
+                   (135, 'Malta'),
+                   (136, 'Man (Isle of)'),
+                   (137, 'Marshall Islands'),
+                   (138, 'Martinique'),
+                   (139, 'Mauritania'),
+                   (140, 'Mauritius'),
+                   (141, 'Mayotte'),
+                   (142, 'Mexico'),
+                   (143, 'Micronesia'),
+                   (144, 'Moldova'),
+                   (145, 'Monaco'),
+                   (146, 'Mongolia'),
+                   (147, 'Montenegro'),
+                   (148, 'Montserrat'),
+                   (149, 'Morocco'),
+                   (150, 'Mozambique'),
+                   (151, 'Myanmar'),
+                   (152, 'Namibia'),
+                   (153, 'Nauru'),
+                   (154, 'Nepal'),
+                   (155, 'Bonaire,Sint Eustatius and Saba'),
+                   (156, 'Netherlands'),
+                   (157, 'New Caledonia'),
+                   (158, 'New Zealand'),
+                   (159, 'Nicaragua'),
+                   (160, 'Niger'),
+                   (161, 'Nigeria'),
+                   (162, 'Niue'),
+                   (163, 'Norfolk Island'),
+                   (164, 'Northern Mariana Islands'),
+                   (165, 'Norway'),
+                   (166, 'Oman'),
+                   (167, 'Pakistan'),
+                   (168, 'Palau'),
+                   (169, 'Palestinian Territory Occupied'),
+                   (170, 'Panama'),
+                   (171, 'Papua new Guinea'),
+                   (172, 'Paraguay'),
+                   (173, 'Peru'),
+                   (174, 'Philippines'),
+                   (175, 'Pitcairn Island'),
+                   (176, 'Poland'),
+                   (177, 'Portugal'),
+                   (178, 'Puerto Rico'),
+                   (179, 'Qatar'),
+                   (180, 'Reunion'),
+                   (181, 'Romania'),
+                   (182, 'Russia'),
+                   (183, 'Rwanda'),
+                   (184, 'Saint Helena'),
+                   (185, 'Saint Kitts And Nevis'),
+                   (186, 'Saint Lucia'),
+                   (187, 'Saint Pierre and Miquelon'),
+                   (188, 'Saint Vincent And The Grenadines'),
+                   (189, 'Saint-Barthelemy'),
+                   (190, 'Saint-Martin (French part)'),
+                   (191, 'Samoa'),
+                   (192, 'San Marino'),
+                   (193, 'Sao Tome and Principe'),
+                   (194, 'Saudi Arabia'),
+                   (195, 'Senegal'),
+                   (196, 'Serbia'),
+                   (197, 'Seychelles'),
+                   (198, 'Sierra Leone'),
+                   (199, 'Singapore'),
+                   (200, 'Slovakia'),
+                   (201, 'Slovenia'),
+                   (202, 'Solomon Islands'),
+                   (203, 'Somalia'),
+                   (204, 'South Africa'),
+                   (205, 'South Georgia'),
+                   (206, 'South Sudan'),
+                   (207, 'Spain'),
+                   (208, 'Sri Lanka'),
+                   (209, 'Sudan'),
+                   (210, 'Suriname'),
+                   (211, 'Svalbard And Jan Mayen Islands'),
+                   (212, 'Swaziland'),
+                   (213, 'Sweden'),
+                   (214, 'Switzerland'),
+                   (215, 'Syria'),
+                   (216, 'Taiwan'),
+                   (217, 'Tajikistan'),
+                   (218, 'Tanzania'),
+                   (219, 'Thailand'),
+                   (220, 'Togo'),
+                   (221, 'Tokelau'),
+                   (222, 'Tonga'),
+                   (223, 'Trinidad And Tobago'),
+                   (224, 'Tunisia'),
+                   (225, 'Turkey'),
+                   (226, 'Turkmenistan'),
+                   (227, 'Turks And Caicos Islands'),
+                   (228, 'Tuvalu'),
+                   (229, 'Uganda'),
+                   (230, 'Ukraine'),
+                   (231, 'United Arab Emirates'),
+                   (232, 'United Kingdom'),
+                   (233, 'United States'),
+                   (234, 'United States Minor Outlying Islands'),
+                   (235, 'Uruguay'),
+                   (236, 'Uzbekistan'),
+                   (237, 'Vanuatu'),
+                   (238, 'Vatican City State (Holy See)'),
+                   (239, 'Venezuela'),
+                   (240, 'Vietnam'),
+                   (241, 'Virgin Islands (British)'),
+                   (242, 'Virgin Islands (US)'),
+                   (243, 'Wallis And Futuna Islands'),
+                   (244, 'Western Sahara'),
+                   (245, 'Yemen'),
+                   (246, 'Zambia'),
+                   (247, 'Zimbabwe'),
+                   (248, 'Kosovo'),
+                   (249, 'Curaçao'),
+                   (250, 'Sint Maarten (Dutch part)');
+        </sql>
+    </changeSet>
+    <changeSet id="test" author="hhakoyan">
+        <sql>
+            create table if not exists test
+            (
+                id   int auto_increment
+                primary key,
+                name varchar(100) not null
+                );
+        </sql>
+    </changeSet>
+    <changeSet id="dropTestTable" author="hhakobyan">
+        <dropTable tableName="test"/>
+    </changeSet>
+    <changeSet id="addDateTimeInCommentaryTable" author="hhakobyan">
+        <addColumn tableName="commentary">
+            <column afterColumn="id"
+                    name="date_time"
+                    type="datetime">
+                <constraints nullable="false" />
+            </column>
+        </addColumn>
+    </changeSet>
+    <changeSet id="changNameColumCompany" author="dkirakosyan">
+        <addColumn tableName="work_experiences">
+            <column afterColumn="id"
+            name="company"
+            type="varchar(255)">
+            <constraints nullable="false" />
+            </column>
+        </addColumn>
+        <dropColumn tableName="work_experiences">
+            <column name="we_name">
+
+            </column>
+        </dropColumn>
+    </changeSet>
+    <changeSet id="addColumnUserEnabled" author="hhakobyan">
+        <addColumn tableName="user">
+            <column name="enabled"
+            type="boolean"
+            defaultValue="false">
+                <constraints nullable="false"/>
+            </column>
+        </addColumn>
+    </changeSet>
+    <changeSet id="addColumnUserToken" author="hhakobyan">
+        <addColumn tableName="user">
+            <column name="token"
+            type="varchar(255)">
+                <constraints nullable="true"/>
+            </column>
+        </addColumn>
+    </changeSet>
+    <changeSet id="message" author="VaheKostikyan">
+        <sql>
+            CREATE TABLE if not exists chat (
+                `id` INT PRIMARY KEY auto_increment,
+                `current_user_id` INT NOT NULL,
+                `another_user_id` INT NOT NULL,
+                FOREIGN KEY (current_user_id) REFERENCES `user`(id),
+                FOREIGN KEY (another_user_id) REFERENCES `user`(id)
+            );
+            create table if not exists message(
+                `id` INT PRIMARY KEY auto_increment,
+                `chat_id` INT NOT NULL,
+                `sender_id` INT NOT NULL,
+                `receiver_id` INT NOT NULL,
+
+                `content` TEXT,
+                `sent_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+
+                FOREIGN KEY (`chat_id`) REFERENCES `chat`(id),
+                FOREIGN KEY (`sender_id`) REFERENCES `user`(id),
+                FOREIGN KEY (`receiver_id`) REFERENCES `user`(id)
+            )
+
+        </sql>
+
+    </changeSet>
+
+    <changeSet id="addColumnUserType_IsBlocked" author="VaheKostikyan">
+        <addColumn tableName="user">
+            <column name="role"
+                    type="enum('ADMIN', 'USER', 'BLOCKED')">
+                <constraints nullable="false"/>
+            </column>
+        </addColumn>
+    </changeSet>
+        <changeSet id="changeForeignKeysOnDelete" author="VaheKostikyan">
+            <sql>
+
+                alter table chat
+                drop foreign key chat_ibfk_1;
+
+                alter table chat
+                    add constraint chat_ibfk_1
+                        foreign key (current_user_id) references user (id)
+                            on delete cascade;
+
+                alter table chat
+                drop foreign key chat_ibfk_2;
+
+                alter table chat
+                    add constraint chat_ibfk_2
+                        foreign key (another_user_id) references user (id)
+                            on delete cascade;
+
+                alter table commentary
+                drop foreign key commentary_post__fk;
+
+                alter table commentary
+                    add constraint commentary_post__fk
+                        foreign key (post_id) references post (id)
+                            on delete cascade;
+
+                alter table commentary
+                drop foreign key user_commentary__fk;
+
+                alter table commentary
+                    add constraint user_commentary__fk
+                        foreign key (user_id) references user (id)
+                            on delete cascade;
+
+                alter table education
+                drop foreign key education__fk;
+
+                alter table education
+                    add constraint education__fk
+                        foreign key (user_id) references user (id)
+                            on delete cascade;
+
+                alter table friend_request
+                drop foreign key friend_request_receiver__fk;
+
+                alter table friend_request
+                    add constraint friend_request_receiver__fk
+                        foreign key (receiver_id) references user (id)
+                            on delete cascade;
+
+                alter table friend_request
+                drop foreign key friend_request_sender__fk;
+
+                alter table friend_request
+                    add constraint friend_request_sender__fk
+                        foreign key (sender_id) references user (id)
+                            on delete cascade;
+
+                alter table interests
+                drop foreign key user_interests__fk;
+
+                alter table interests
+                    add constraint user_interests__fk
+                        foreign key (user_id) references user (id)
+                            on delete cascade;
+
+                alter table language
+                drop foreign key user_language__fk;
+
+                alter table language
+                    add constraint user_language__fk
+                        foreign key (user_id) references user (id)
+                            on delete cascade;
+
+                alter table message
+                drop foreign key message_ibfk_1;
+
+                alter table message
+                    add constraint message_ibfk_1
+                        foreign key (chat_id) references chat (id)
+                            on delete cascade;
+
+                alter table message
+                drop foreign key message_ibfk_2;
+
+                alter table message
+                    add constraint message_ibfk_2
+                        foreign key (sender_id) references user (id)
+                            on delete cascade;
+
+                alter table message
+                drop foreign key message_ibfk_3;
+
+                alter table message
+                    add constraint message_ibfk_3
+                        foreign key (receiver_id) references user (id)
+                            on delete cascade;
+
+                alter table post
+                drop foreign key user_post__fk;
+
+                alter table post
+                    add constraint user_post__fk
+                        foreign key (user_id) references user (id)
+                            on delete cascade;
+
+                alter table post_like
+                drop foreign key postLike_postLike_fk;
+
+                alter table post_like
+                    add constraint postLike_postLike_fk
+                        foreign key (post_id) references post (id)
+                            on delete cascade;
+
+                alter table post_like
+                drop foreign key post_like_userLike_fk;
+
+                alter table post_like
+                    add constraint post_like_userLike_fk
+                        foreign key (user_id) references user (id)
+                            on delete cascade;
+
+                alter table user
+                drop foreign key user_country__fk;
+
+                alter table user
+                    add constraint user_country__fk
+                        foreign key (country_id) references user_country (id)
+                            on delete cascade;
+
+                alter table user_friends
+                drop foreign key friends__fk;
+
+                alter table user_friends
+                    add constraint friends__fk
+                        foreign key (friend_id) references user (id)
+                            on delete cascade;
+
+                alter table user_friends
+                drop foreign key user__fk;
+
+                alter table user_friends
+                    add constraint user__fk
+                        foreign key (user_id) references user (id)
+                            on delete cascade;
+
+                alter table user_image
+                drop foreign key user_user_image__fk;
+
+                alter table user_image
+                    add constraint user_user_image__fk
+                        foreign key (user_id) references user (id)
+                            on delete cascade;
+
+                alter table work_experiences
+                drop foreign key work_experiences__fk;
+
+                alter table work_experiences
+                    add constraint work_experiences__fk
+                        foreign key (user_id) references user (id)
+                            on delete cascade;
+
+            </sql>
+        </changeSet>
+
+    <changeSet id="addActivityTable" author="hhakobyan">
+        <createTable tableName="userActivity">
+            <column name="id" type="BIGINT" autoIncrement="true">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="user_id" type="INTEGER">
+                <constraints nullable="false"/>
+            </column>
+            <column name="type" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="datetime" type="DATETIME">
+                <constraints nullable="false"/>
+            </column>
+
+
+        </createTable>
+        <addForeignKeyConstraint baseColumnNames="user_id"
+                                 baseTableName="userActivity"
+                                 constraintName="fk_activity_user_id"
+                                 referencedColumnNames="id"
+                                 referencedTableName="user"/>
+    </changeSet>
+
+    <changeSet id="addColumnDate" author="hhakobyan">
+        <dropColumn tableName="userActivity">
+            <column name="datetime">
+
+            </column>
+        </dropColumn>
+        <addColumn tableName="userActivity">
+            <column afterColumn="type"
+                    name="datetime"
+                    type="TIMESTAMP" defaultValueComputed="CURRENT_TIMESTAMP">
+                <constraints nullable="false"/>
+            </column>
+        </addColumn>
+        <renameTable  newTableName="user_activity"
+                      oldTableName="userActivity"/>
+    </changeSet>
+
+    <changeSet id="deleteFKUserActivity" author="VaheKostikyan">
+        <sql>
+            ALTER TABLE user_activity
+            DROP FOREIGN KEY fk_activity_user_id;
+        </sql>
+    </changeSet>
+
+    <changeSet id="addConstraintOnDeleteCascade" author="VaheKostikyan">
+        <sql>
+            ALTER TABLE user_activity
+                ADD CONSTRAINT fk_activity_user_id
+                    FOREIGN KEY (user_id) REFERENCES user (id) ON DELETE CASCADE;
+        </sql>
+    </changeSet>
+
+</databaseChangeLog>

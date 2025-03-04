@@ -1,0 +1,12 @@
+version: '3.8'
+
+services:
+  mysql:
+    image: mysql:8
+    container_name: mysql-friend_finder
+    restart: always
+    environment:
+      MYSQL_DATABASE: friend_finder
+      MYSQL_ROOT_PASSWORD: root
+    ports:
+      - "3306:3306"

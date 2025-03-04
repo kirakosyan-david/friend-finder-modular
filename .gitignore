@@ -1,0 +1,4 @@
+# Project exclude paths
+/friend-finder-common/target/
+/friend-finder-rest/target/
+/friend-finder-web/target/

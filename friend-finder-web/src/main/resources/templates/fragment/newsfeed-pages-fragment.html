@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en"  xmlns:th="http://www.thymeleaf.org">
+<head>
+  <link rel="stylesheet" href="/css/bootstrap.min.css">
+  <link rel="stylesheet" href="/css/jquery.scrollbar.css">
+  <link rel="stylesheet" href="/css/style.css">
+  <link rel="stylesheet" href="/css/ionicons.min.css">
+  <link rel="stylesheet" href="/css/font-awesome.min.css">
+  <link href="/css/emoji.css" rel="stylesheet">
+</head>
+
+<body>
+<ul class="nav-news-feed" th:fragment="newsfeed-pages">
+  <li><i class="icon ion-ios-paper"></i><div><a href="/posts">My Newsfeed</a></div></li>
+  <li><i class="icon ion-ios-people-outline"></i><div><a href="/friends">Friends</a></div></li>
+  <li><i class="icon ion-chatboxes"></i><div><a href="/newsfeed/messages">Messages</a></div></li>
+  <li><i class="icon ion-images"></i><div><a href="/posts/images">Images</a></div></li>
+  <li><i class="icon ion-ios-videocam"></i><div><a href="/posts/video">Videos</a></div></li>
+</ul>
+
+<script src="/js/jquery-3.1.1.min.js"></script>
+<script src="/js/bootstrap.min.js"></script>
+<script src="/js/jquery.sticky-kit.min.js"></script>
+<script src="/js/jquery.scrollbar.min.js"></script>
+<script src="/js/script.js"></script>
+</body>
+</html>

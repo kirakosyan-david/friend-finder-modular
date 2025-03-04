@@ -1,0 +1,205 @@
+﻿<!DOCTYPE html>
+<html lang="en"  xmlns:th="http://www.thymeleaf.org">
+	<head>
+		<meta http-equiv="content-type" content="text/html; charset=utf-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1">
+		<meta name="description" content="This is social network html5 template available in themeforest......">
+		<meta name="keywords" content="Social Network, Social Media, Make Friends, Newsfeed, Profile Page">
+		<meta name="robots" content="index, follow">
+		<title>About Me | Learn Detail About Me</title>
+
+    <!-- Stylesheets
+    ================================================= -->
+		<link rel="stylesheet" href="/css/bootstrap.min.css">
+		<link rel="stylesheet" href="/css/style.css">
+		<link rel="stylesheet" href="/css/ionicons.min.css">
+    <link rel="stylesheet" href="/css/font-awesome.min.css">
+    
+    <!--Google Font-->
+    <link href="/../css.css?family=Lato:300,400,400i,700,700i" rel="stylesheet">
+    
+    <!--Favicon-->
+    <link rel="shortcut icon" type="image/png" href="/images/fav.png">
+	</head>
+  <body>
+
+    <!-- Header
+    ================================================= -->
+		<header id="header">
+      <nav class="navbar navbar-default navbar-fixed-top menu">
+        <div class="container">
+
+          <!-- Brand and toggle get grouped for better mobile display -->
+          <div class="navbar-header">
+            <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1" aria-expanded="false">
+              <span class="sr-only">Toggle navigation</span>
+              <span class="icon-bar"></span>
+              <span class="icon-bar"></span>
+              <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="/posts"><img src="/images/logo.png" alt="logo"></a>
+          </div>
+
+          <!-- Collect the nav links, forms, and other content for toggling -->
+          <div th:include="fragment/header-menu-fragment::header-menu"></div>
+
+        </div><!-- /.container -->
+      </nav>
+    </header>
+    <!--Header End-->
+
+    <div class="container">
+
+      <!-- Timeline
+      ================================================= -->
+      <div class="timeline">
+        <div class="timeline-cover">
+
+          <!--Timeline Menu for Large Screens-->
+          <div class="timeline-nav-bar hidden-sm hidden-xs">
+            <form action="/timeline/change-profile-bg-pic" method="post" enctype="multipart/form-data" id="profile-bg-form">
+              <div th:if="${profile.id == user.id}">
+                <input type="file" name="profile-bg-pic" style="display: none" id="profile-bg-picture">
+                <a href="#" onclick="document.getElementById('profile-bg-picture').click()">
+                  <img th:if="${user.getProfileBackgroundPic() == null || user.getProfileBackgroundPic().equalsIgnoreCase('null')}" src="/images/covers/1.jpg" alt="" > </a>
+                <a href="#" onclick="document.getElementById('profile-bg-picture').click()">
+                  <img th:if="${user.getProfileBackgroundPic() != null}" th:src="@{/getBgProfilePic(imageName=${user.getProfileBackgroundPic()})}" width="1030" alt="" id="profile-bg-pic"  > </a>
+              </div>
+              <div th:if="${profile.id != user.id}">
+                <a> <img th:if="${user.getProfileBackgroundPic() == null || user.getProfileBackgroundPic().equalsIgnoreCase('null')}" src="/images/covers/1.jpg" alt="" > </a>
+                <a> <img th:if="${user.getProfileBackgroundPic() != null}" th:src="@{/getBgProfilePic(imageName=${user.getProfileBackgroundPic()})}" width="1030" alt=""  > </a>
+              </div>
+            </form>
+            <script>
+              document.getElementById('profile-bg-picture').addEventListener('change', function() {
+                document.getElementById('profile-bg-form').submit();
+              });
+            </script>
+            <div class="row">
+              <div class="col-md-3">
+                <form action="/timeline/change-profile-pic" method="post" enctype="multipart/form-data" id="profile-form">
+                  <input type="file" name="profile-pic" style="display: none" id="profile-pic">
+                  <div th:if="${profile.id == user.id}">
+                    <div class="profile-info" th:if="${user.getProfilePicture() == null || user.getProfilePicture().equalsIgnoreCase('null')}" >
+                      <a  href="#" onclick="document.getElementById('profile-pic').click()"><img alt="" class="img-responsive profile-photo" src="/images/post-images/difault.png"> </a>
+
+                      <h3><i th:text="${user.name}"></i>  <i th:text="${user.surname}"></i></h3>
+                    </div>
+                    <div class="profile-info" th:if="${user.getProfilePicture() != null}">
+                      <a href="#" onclick="document.getElementById('profile-pic').click()"><img alt="" class="img-responsive profile-photo" th:src="@{/getProfilePic(imageName=${user.getProfilePicture()})}"> </a>
+
+                      <h3><i th:text="${user.name}"></i>  <i th:text="${user.surname}"></i></h3>
+                    </div>
+                  </div>
+                  <div th:if="${profile.id != user.id}">
+                    <div class="profile-info" th:if="${user.getProfilePicture() == null || user.getProfilePicture().equalsIgnoreCase('null')}" >
+                      <a><img alt="" class="img-responsive profile-photo" src="/images/post-images/difault.png"> </a>
+                      <h3><i th:text="${user.name}"></i>  <i th:text="${user.surname}"></i></h3>
+                    </div>
+                    <div class="profile-info" th:if="${user.getProfilePicture() != null}">
+                      <a><img alt="" class="img-responsive profile-photo" th:src="@{/getProfilePic(imageName=${user.getProfilePicture()})}"> </a>
+                      <h3><i th:text="${user.name}"></i>  <i th:text="${user.surname}"></i></h3>
+                    </div>
+                  </div>
+                </form>
+                <script>
+                  document.getElementById('profile-pic').addEventListener('change', function() {
+                    document.getElementById('profile-form').submit();
+                  });
+                </script>
+
+              </div>
+              <div class="col-md-9">
+                <ul class="list-inline profile-menu">
+                  <li><a th:href="@{'/users/profile/' + ${user.id}}" >Timeline</a></li>
+                  <li><a th:href="@{'/user/about/profile' + ${user.id}}" class="active">About</a></li>
+                  <li><a th:href="@{'/users/image/profile/' + ${user.id}}" >Album</a></li>
+                  <li><a th:href="@{'/users/friend/profile/' + ${user.id}}">Friends</a></li>
+                </ul>
+                <ul class="follow-me list-inline">
+                  <li th:text="${friendsCount + ' friends'}"></li>
+                  <li th:if="${profile.id != user.id}">
+                    <a th:href="@{'/users/about/profile/send-request?sender=' + ${profile.id} + '&receiver=' +${user.id}}">
+                    <button class="btn-primary" >Add Friend</button>
+                  </a></li>
+                </ul>
+              </div>
+            </div>
+          </div><!--Timeline Menu for Small Screens End-->
+
+        </div>
+        <div id="page-contents">
+          <div class="row">
+            <div class="col-md-3"></div>
+            <div class="col-md-7">
+
+              <!-- About
+              ================================================= -->
+              <div class="about-profile">
+                <div class="about-content-block">
+                  <h4 class="grey"><i class="ion-ios-information-outline icon-in-title"></i>Personal Information</h4>
+                  <p th:text="${user.personalInformation}"></p>
+                </div>
+                <div class="about-content-block">
+                  <h4 class="grey"><i class="ion-ios-briefcase-outline icon-in-title"></i>Work Experiences</h4>
+                  <div class="organization" th:each="we : ${workExperiences}">
+                    <img src="/images/envato.png" alt="" class="pull-left img-org">
+                    <div class="work-info">
+                      <h5> <i th:text="${we.company}"></i> <i th:text="${we.weDesignation}"></i></h5>
+                      <span class="text-grey" th:text="'from - ' + ${we.weFromDate} + ' to - '+ ${we.weToDate}"></span>
+                    </div>
+                  </div>
+
+                </div>
+                <div class="about-content-block">
+                  <h4 class="grey"><i class="ion-ios-heart-outline icon-in-title"></i>Interests</h4>
+                  <ul>
+                    <li th:each="inter: ${interests}"><a th:text="${inter.interest}"></a></li>
+                  </ul>
+                </div>
+                <div class="about-content-block">
+                  <h4 class="grey"><i class="ion-ios-chatbubble-outline icon-in-title"></i>Language</h4>
+                    <ul>
+                      <li th:each="lang: ${languages}"><a th:text="${lang.language}"></a></li>
+                    </ul>
+                </div>
+              </div>
+            </div>
+            <div class="col-md-2 static">
+              <div id="sticky-sidebar">
+                <h4 class="grey" th:text="${user.name}+'\'s activity'"></h4>
+                <div class="feed-item" th:each=" activity : ${userActivity}">
+                  <div class="live-activity">
+                    <a th:href="@{'/users/profile/' + ${user.id}}" class="profile-link" th:text="${user.name}+' '+${user.surname}"></a>
+                    <p th:text="${activity.type}"></p>
+                    <p class="text-muted" th:text="${#temporals.format(activity.dateTime, 'dd-MM-yyyy HH:mm')}"></p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+
+    <!-- Footer
+    ================================================= -->
+    <footer th:include="fragment/footer-menu-fragment::footer-menu"></footer>
+    
+    <!--preloader-->
+    <div id="spinner-wrapper">
+      <div class="spinner"></div>
+    </div>
+
+    <!-- Scripts
+    ================================================= -->
+    <script async="" defer="" src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCTMXfmDn0VlqWIyoOxK8997L-amWbUPiQ&callback=initMap"></script>
+    <script src="/js/jquery-3.1.1.min.js"></script>
+    <script src="/js/bootstrap.min.js"></script>
+    <script src="/js/jquery.sticky-kit.min.js"></script>
+    <script src="/js/jquery.scrollbar.min.js"></script>
+    <script src="/js/script.js"></script>
+    
+  </body>
+</html>

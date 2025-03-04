@@ -1,0 +1,321 @@
+﻿<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta http-equiv="content-type" content="text/html; charset=utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="This is social network html5 template available in themeforest......">
+    <meta name="keywords" content="Social Network, Social Media, Make Friends, Newsfeed, Profile Page">
+    <meta name="robots" content="index, follow">
+    <title>News Feed | Check what your friends are doing</title>
+
+    <!-- Stylesheets
+    ================================================= -->
+    <link rel="stylesheet" href="/css/bootstrap.min.css">
+    <link rel="stylesheet" href="/css/style.css">
+    <link rel="stylesheet" href="/css/ionicons.min.css">
+    <link rel="stylesheet" href="/css/font-awesome.min.css">
+    <link href="/css/emoji.css" rel="stylesheet">
+
+    <!--Favicon-->
+    <link rel="shortcut icon" type="image/png" href="/images/fav.png">
+</head>
+<body>
+
+<!-- Header
+================================================= -->
+<header id="header">
+    <nav class="navbar navbar-default navbar-fixed-top menu">
+        <div class="container">
+
+            <!-- Brand and toggle get grouped for better mobile display -->
+            <div class="navbar-header">
+                <button type="button" class="navbar-toggle collapsed" data-toggle="collapse"
+                        data-target="#bs-example-navbar-collapse-1" aria-expanded="false">
+                    <span class="sr-only">Toggle navigation</span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+                <a class="navbar-brand" href="/posts"><img src="/images/logo.png" alt="logo"></a>
+            </div>
+
+            <!-- Collect the nav links, forms, and other content for toggling -->
+            <div th:include="fragment/header-menu-fragment::header-menu"></div>
+
+        </div><!-- /.container -->
+    </nav>
+</header>
+<!--Header End-->
+
+<div id="page-contents">
+    <div class="container">
+        <div class="row">
+
+            <!-- Newsfeed Common Side Bar Left
+            ================================================= -->
+            <div class="col-md-3 static">
+                <form action="/posts/add" method="get">
+                    <div class="profile-card"
+                         th:if="${user.profilePicture == null || user.profilePicture.equalsIgnoreCase('null')}">
+                        <img src="/images/post-images/difault.png" alt="user" class="profile-photo">
+                        <h5><a th:href="@{'/users/profile/' + ${user.id}}" class="text-white"><i th:text="${user.name}"></i> <i
+                                th:text="${user.surname}"></i></a></h5>
+                    </div>
+                    <div class="profile-card" th:if="${user.profilePicture != null}">
+                        <img th:src="@{/getProfilePic(imageName=${user.profilePicture})}" alt="user"
+                             class="profile-photo">
+                        <h5><a th:href="@{'/users/profile/' + ${user.id}}"  class="text-white"><i th:text="${user.name}"></i> <i
+                                th:text="${user.surname}"></i></a></h5>
+                    </div>
+                </form>
+                <!--profile card ends-->
+                <ul class="nav-news-feed" th:include="fragment/newsfeed-pages-fragment::newsfeed-pages"> </ul>
+                <!--news-feed links ends-->
+                <div id="chat-block">
+                    <div class="title"><a th:href="@{/newsfeed/messages}" style="color: white">Chat online</a></div>
+                    <ul class="online-users list-inline">
+                        <li th:each="oneUser, iterStat : ${allExceptCurrentUser}" th:if="${iterStat.index <= 8}">
+                            <a th:href="@{/newsfeed/chat/create/{id}(id=${oneUser.getId()})}" th:title="${oneUser.getName() + ' ' + oneUser.getSurname()}">
+                                <img th:if="${oneUser.getProfilePicture() != null}"
+                                     th:src="@{/getProfilePic(imageName=${oneUser.getProfilePicture()})}" alt="user"
+                                     class="img-responsive profile-photo">
+                                <img th:if="${oneUser.getProfilePicture() == null || oneUser.getProfilePicture().equalsIgnoreCase('null')}"
+                                     src="/images/users/difault.png" alt="user" class="img-responsive profile-photo">
+
+                                <span class="online-dot"></span></a></li>
+                    </ul>
+                </div><!--chat block ends-->
+            </div>
+            <div class="col-md-7">
+
+                <!-- Post Create Box
+                ================================================= -->
+                <div class="create-post">
+                    <form action="/posts/add" method="post" enctype="multipart/form-data">
+                        <input type="file" name="image" style="display: none" id="upload-image">
+                        <input type="file" name="video" style="display: none" id="upload-video">
+                        <div class="row">
+                            <div class="col-md-7 col-sm-7">
+                                <div class="form-group"
+                                     th:if="${user.profilePicture == null || user.profilePicture.equalsIgnoreCase('null')}">
+                                    <img src="/images/post-images/difault.png" alt="" class="profile-photo-md">
+                                    <textarea name="description" cols="30" rows="1" class="form-control"
+                                              placeholder="Write what you wish"></textarea>
+                                </div>
+                                <div class="form-group" th:if="${user.profilePicture != null}">
+                                    <img th:src="@{/getProfilePic(imageName=${user.getProfilePicture()})}" alt=""
+                                         class="profile-photo-md">
+                                    <textarea name="description" cols="30" rows="1" class="form-control"
+                                              placeholder="Write what you wish"></textarea>
+                                </div>
+                            </div>
+                            <div class="col-md-5 col-sm-5">
+                                <div class="tools">
+                                    <ul class="publishing-tools list-inline">
+                                        <li><a href="#" onclick="document.getElementById('upload-image').click()"><i
+                                                class="ion-images"></i></a></li>
+                                        <li><a href="#" onclick="document.getElementById('upload-video').click()"><i
+                                                class="ion-ios-videocam"></i></a></li>
+                                    </ul>
+                                    <button class="btn btn-primary pull-right" type="submit">Publish</button>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                </div><!-- Post Create Box End-->
+
+                <!-- Post Content
+                ================================================= -->
+                <div class="post-content" th:each="post : ${posts}">
+
+                    <img th:if="${post.imgName != null}" th:src="@{/getImage(imageName=${post.imgName})}"
+                         alt="post-image" class="img-responsive post-image">
+                    <div class="video-wrapper" th:if="${post.musicFileName != null}">
+                        <video class="post-video" controls="">
+                            <source th:src="@{/getVideo(videoName=${post.musicFileName})}" type="video/mp4">
+                        </video>
+                    </div>
+                    <div class="post-container">
+                        <img th:if="${post.user.profilePicture == null || post.user.profilePicture.equalsIgnoreCase('null')}"
+                             src="/images/post-images/difault.png" alt="user" class="profile-photo-md pull-left">
+
+                        <img th:if="${post.user.profilePicture != null}"
+                             th:src="@{/getProfilePic(imageName=${post.user.getProfilePicture()})}" alt="user"
+
+                             class="profile-photo-md pull-left">
+                        <div class="post-detail">
+                            <div class="user-info">
+                                <h5><a th:href="@{'/users/profile/' + ${post.user.id}}" class="profile-link">
+                                    <i th:text="${post.user.name}"></i> <i th:text="${post.user.surname}"></i></a></h5>
+                            </div><br>
+                            <div class="reaction">
+                                <form class="btn text-green"
+                                      th:action="@{posts/reaction/like/{postId}(postId=${post.id})}"
+                                      method="post" id="like">
+                                    <i class="icon ion-thumbsup" onclick="$(this).parent()[0].submit()"
+                                       href="#" th:text="${post.likeCount}">
+                                    </i>
+                                </form>
+                                <form class="btn text-red"
+                                      th:action="@{posts/reaction/dislike/{postId}(postId=${post.id})}"
+                                      method="post" id="dislike">
+                                    <i class="fa fa-thumbs-down" onclick="$(this).parent()[0].submit()"
+                                       href="#" th:text="${post.dislikeCount}">
+                                    </i>
+                                </form>
+                            </div>
+                            <div class="line-divider"></div>
+                            <div class="post-text">
+                                <p th:text="${post.description}"></p>
+                            </div>
+                            <div class="line-divider"></div>
+                            <div th:each="comment: ${comments}" th:if="${post.id == comment.post.id}">
+                                <div class="post-comment">
+                                    <img th:if="${comment.user.profilePicture == null || comment.user.profilePicture.equalsIgnoreCase('null')}"
+                                         src="/images/post-images/difault.png" alt="" class="profile-photo-sm">
+                                    <img th:if="${comment.user.profilePicture != null}"
+                                         th:src="@{/getProfilePic(imageName=${comment.user.profilePicture})}" alt=""
+                                         class="profile-photo-sm">
+                                    <p><a th:href="@{'/users/profile/' + ${comment.user.id}}" class="profile-link" th:text="${comment.user.name}"> </a> <i
+                                            th:text="${comment.commentaryText}"></i><br></p>
+                                </div>
+                                <samp th:text="${#temporals.format(comment.datetime, 'dd-MM-yyyy HH:mm')}"></samp><br>
+                                <a th:if="${user.id == comment.user.id}" th:href="@{/posts/comment/delete(id=${comment.id})}">Delete comment</a>
+                            </div>
+
+
+                            <form class="post-comment" th:action="@{/posts/comment/{postId}(postId=${post.id})}"
+                                  method="post">
+                                <img th:if="${user.profilePicture == null || user.profilePicture.equalsIgnoreCase('null')}"
+                                     src="/images/post-images/difault.png" alt="" class="profile-photo-sm">
+                                <img th:if="${user.profilePicture != null}"
+                                     th:src="@{/getProfilePic(imageName=${user.profilePicture})}" alt=""
+                                     class="profile-photo-sm">
+                                <input type="text" class="form-control" name="commentaryText"
+                                       placeholder="Post a comment">
+                            </form>
+                        </div>
+                    </div>
+                </div>
+
+                <nav aria-label="...">
+                    <ul class="pagination justify-content-end">
+                        <li class="page-item ">
+                            <a class="page-link" th:if="${currentPage > 1}" th:href="@{/posts/page/1}">First</a>
+                        </li>
+                        <li class="page-item ">
+                            <a class="page-link" th:if="${currentPage > 1}"
+                               th:href="@{'/posts/page/' + ${currentPage - 1}}">Previous</a>
+                        </li>
+                        <th:block th:if="${totalPages <= 8}">
+                            <li class="page-item" aria-current="page"
+                                th:if="${totalPages > 0}"
+                                th:each="pageNumber : ${#numbers.sequence(1, totalPages)}">
+                                <a class="page-link"
+                                   th:href="@{'/posts/page/' + ${pageNumber}}"
+                                   th:text="${pageNumber}"
+                                   th:class="${pageNumber==currentPage} ? active"
+                                ></a>
+                            </li>
+                        </th:block>
+
+                        <th:block th:if="${totalPages > 8}">
+                            <th:block th:if="${currentPage <= 5 || currentPage > totalPages - 4}">
+                                <li class="page-item" aria-current="page"
+                                    th:each="pageNumber : ${#numbers.sequence(1, 5)}">
+                                    <a class="page-link"
+                                       th:href="@{'/posts/page/' + ${pageNumber}}"
+                                       th:text="${pageNumber}"
+                                       th:class="${pageNumber==currentPage} ? active"
+                                    ></a>
+
+                                </li>
+
+                                <li class="page-item">
+                                    <a class="page-link" th:href="@{'/posts/page/' + 6}"
+                                       th:class="${pageNumber==currentPage}">...</a>
+                                </li>
+
+                                <li class="page-item" aria-current="page"
+                                    th:each="pageNumber : ${#numbers.sequence(totalPages - 3, totalPages)}">
+                                    <a class="page-link"
+                                       th:href="@{'/posts/page/' + ${pageNumber}}"
+                                       th:text="${pageNumber}"
+                                       th:class="${pageNumber==currentPage} ? active"
+                                    ></a>
+                                </li>
+
+                            </th:block>
+
+                        </th:block>
+
+                        <li class="page-item">
+                            <a class="page-link" th:if="${currentPage < totalPages}"
+                               th:href="@{'/posts/page/' + ${currentPage + 1}}">Next</a>
+                        </li>
+                        <li class="page-item">
+                            <a class="page-link" th:if="${currentPage < totalPages}"
+                               th:href="@{'/posts/page/' + ${totalPages}} ">Last</a>
+                        </li>
+                    </ul>
+                </nav>
+            </div>
+
+
+            <!-- Newsfeed Common Side Bar Right
+            ================================================= -->
+            <div class="col-md-2 static">
+                <div class="suggestions" id="sticky-sidebar">
+                    <h4 class="grey">Who to Follow</h4>
+                    <div class="follow-user" th:each="us : ${users}">
+                        <img th:if="${us.getProfilePicture() == null || us.getProfilePicture().equalsIgnoreCase('null')}"
+                             src="/images/post-images/difault.png" alt="" class="profile-photo-sm pull-left">
+                        <img th:if="${us.getProfilePicture() != null}"
+                             th:src="@{/getProfilePic(imageName=${us.getProfilePicture()})}" alt="" class="profile-photo-sm pull-left">
+                        <div>
+                            <h5><a th:href="@{'/users/profile/' + ${us.id}}" th:text="${us.name}+' '+${us.surname}"></a></h5>
+                            <a th:href="@{'/send-request?sender=' + ${user.id} + '&receiver=' +${us.id}}"
+                               class="text-green">Add friend</a>
+                        </div>
+                    </div>
+                    <h4 class="grey" th:if="${requestSenders.size()>0}">Friend Requests</h4>
+                    <div class="follow-user" th:each="sender : ${requestSenders}">
+                        <img th:if="${sender.getProfilePicture() == null || sender.getProfilePicture().equalsIgnoreCase('null')}"
+                             src="/images/post-images/difault.png" alt="" class="profile-photo-sm pull-left">
+                        <img th:if="${sender.getProfilePicture() != null}"
+                             th:src="@{/getProfilePic(imageName=${sender.getProfilePicture()})}" alt="" class="profile-photo-sm pull-left">
+                        <div>
+                            <h5><a th:href="@{'/users/profile/' + ${sender.id}}" th:text="${sender.name}+' '+${sender.surname}"></a></h5>
+                            <a th:href="@{'/access-request?sender=' + ${sender.id} + '&receiver=' +${user.id}}"
+                               class="text-green">Accept</a>
+                            <a th:href="@{'/reject-request?sender=' + ${sender.id} + '&receiver=' +${user.id}}"
+                               class="text-green"> Reject</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<footer th:include="fragment/footer-menu-fragment::footer-menu"></footer>
+
+<!--preloader-->
+<div id="spinner-wrapper">
+    <div class="spinner"></div>
+</div>
+
+<!-- Scripts
+================================================= -->
+<script async="" defer=""
+        src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCTMXfmDn0VlqWIyoOxK8997L-amWbUPiQ&callback=initMap"></script>
+<script src="/js/jquery-3.1.1.min.js"></script>
+<script src="/js/bootstrap.min.js"></script>
+<script src="/js/jquery.sticky-kit.min.js"></script>
+<script src="/js/jquery.scrollbar.min.js"></script>
+<script src="/js/script.js"></script>
+<script src="/https://code.jquery.com/jquery-3.6.4.slim.min.js"
+        integrity="sha256-a2yjHM4jnF9f54xUQakjZGaqYs/V1CYvWpoqZzC2/Bw=" crossorigin="anonymous"></script>
+<script src="/./main.js"></script>
+</body>
+</html>
